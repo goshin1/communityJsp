@@ -1,0 +1,175 @@
+@charset "utf-8";
+
+*{
+    margin: 0 auto;
+    list-style : none;
+    text-decoration: none;
+    color: #404040;
+}
+
+
+header{
+    width: 100%;
+    height: 200px;
+    margin-top: 10px;
+}
+
+#over, #under{
+    width: 100%;
+    height: 80px;
+    border-bottom : 1px solid #404040;
+}
+
+#logo{
+    margin: 10px 190px;
+    width: 200px;
+    display: block;
+}
+
+#logo img{
+    width: 100%;
+}
+
+
+#search_box{
+    margin-top: -60px;
+    margin-right: 400px;
+    float: right;
+}
+
+#search_box input{
+    width: 250px;
+    border-radius: 8px;
+    text-align: right;
+}
+
+#colorChange{
+    margin-top: -65px;
+    margin-right: 280px;
+    width: 80px;
+    height: 30px;
+    float: right;
+    border: 1px solid #404040;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+#change{
+    margin: 0;
+    width: 40px;
+    height: 50px;
+    background-color: #00B9FF;
+    border-right: 1px solid #404040;
+    float: left;
+}
+
+
+#login{
+    text-align: center;
+    margin-top: -65px;
+    margin-right: 200px;
+    width: 50px;
+    height: 30px;
+    line-height: 30px;
+    border: 1px solid #404040;
+    border-radius: 8px;
+    float: right;
+
+}
+
+#menu{
+    width: 80%;
+    margin-left: 80px;
+}
+
+.submenu{
+    margin : 25px 50px;
+    font-size: 15px;
+    text-align: center;
+    width: 100px;
+    float: left;
+}
+
+.submenu a:hover{
+    transition: all 0.1s;
+    color:#00B9FF;
+}
+
+/*main*/
+#content{
+    margin: 0 auto;
+    width: 100%;
+}
+
+aside{
+    width: 8%;
+    height : 500px;
+    border: 1px solid #404040;
+    margin: 200px 41px;
+    float: left;
+}
+
+#notice{
+    margin-top: 50px;
+    width: 75%;
+    float: left;
+    height: 100px;
+}
+
+#write{
+    width: 95%;
+    height: 600px;
+    border: 1px solid #404040;
+    
+}
+
+#write input[type=text]{
+    width: 99%;
+    height: 45px;
+    border: none;
+    line-height: 45px;
+    font-size: 20px;
+    background : none;
+}
+
+#write_body{
+    margin-top: 0px;
+    width: 100%;
+	border-top : 1px solid #404040;
+}
+
+
+.hidden_file{
+	display : none;
+}
+/*
+#write input[type=file]{
+    background-image: url(./imgs/img_upload.png);
+    background-size: 40px 40px;
+    background-repeat: no-repeat;
+    width: 40px;
+    height: 40px;
+    border: none;
+    margin : 5px;
+}
+
+*/
+textarea{
+    margin : 5px auto;
+    border: none;
+    width: 99%;
+    height: 490px;
+    font-size : 18px;
+}
+
+#submit_btn{
+    line-height: 30px;
+    text-align: center;
+    color: #ffffff;
+    background-color: #404040;
+    width: 70px;
+    height: 30px;
+    display: block;
+    margin-top: 50px;
+    float: right;
+}
