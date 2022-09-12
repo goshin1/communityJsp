@@ -49,7 +49,7 @@
 
             <div id="post_body">
             	<%
-	            	 String[] fileArray = fileName.split(",");
+	             String[] fileArray = fileName.split(",");
             	 if(fileArray.length > 1){
 	            	 for(int i = 0; i < fileArray.length; i++){ 
 	            		String[] strFormat = {"jpg","JPG","png","PNG","jpeg","JPEG", "gif", "GIF", "webp", "WEBP"};
@@ -69,8 +69,9 @@
 
                 <p>
                 	<!-- 수정, 삭제 버튼은 session의 ID를 저장하여 해당 글의 글쓴이와 동일할 경우에만 활성화 -->
-                    <a class="btn" href="post.html">수정</a>
+                    
                     <%if(id.equals(bean.getWriter())){ %>
+                    <a class="btn" href="#">수정</a>
                     <a class="btn" href="post_delete.jsp?num=<%=num%>">삭제</a>
                     <%} %>
                     <a class="btn" href="index.jsp">목록</a>
