@@ -16,7 +16,9 @@
 
 			<% 
 			
-			   String id = (String)session.getAttribute("id");
+			   String id = "";
+			   if((String)session.getAttribute("id") != null)
+				   id = (String)session.getAttribute("id");
 			   if(id == null || id.equals("")){ %>
             <a id="login" href="./login.jsp">login</a>
             <% } else { %>
