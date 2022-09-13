@@ -96,7 +96,7 @@
 					}
 				%>
 
-			<%if(id != null){ %>
+			<%if(id != ""){ %>
             <a id="post_btn" href="write.jsp">글쓰기</a>
 			<%} %>
             <div id="pageing">
