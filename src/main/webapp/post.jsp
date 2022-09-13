@@ -79,25 +79,73 @@
             </div>
 
             <div id="post_footer">
-            	
+            	<%
+            		Vector<CommentBean> v = pMgr.CommentList(num);
+            		for(int i = 0; i < v.size(); i++){
+            			CommentBean cbean = v.get(i);
+            			String cWriter = cbean.getcWriter();
+            			String comment = cbean.getComment();
+            			int cNum = cbean.getcNum();
+            			int ref = cbean.getRef();
+            			if(ref == 0){
+            	%>
                 <div class="comments">
-                    <span>익명</span>
-                    <span>질문의 답변</span>
-                    <a href="#"><img src="imgs/check.png" alt=""></a>
+                    <span><%=cWriter %></span>
+                    <span><%=comment %></span>
+                    		<%if(id.equals(cWriter)){ %>
+                    <a href="#">
+                    	<img src="imgs/check.png" alt="">
+                    </a>
+                    		<%} %>
+                   	<form method="post" action="comment.jsp?num=<%=num %>&ref=<%=cNum %>" class="recomment_insert">
+	                	<label for="comment"><%=id%><input type="text" name="comment" placeholder="내용을 입력하고 엔터를 쳐주세요."></label>
+	                	<input type="hidden" name="id" value="<%=id %>">
+	                	<input type="hidden" name="type" value="answer">
+	                </form>
                 </div>
+                <%		} else{ %>	
                 <div class="comments_after">
-                    <span>익명</span>
-                    <span>질문의 답변</span>
-                    <a href="#"><img src="imgs/check.png" alt=""></a>
+                    <span><%=cWriter %></span>
+                    <span><%=comment %></span>
+                    		<%if(id.equals(cWriter)){ %>
+                    <a href="#">
+                    	<img src="imgs/check.png" alt="">
+                    </a>
+                    		<%} %>
                 </div>
+                <% 		}
+            		}
+                %>
+                
+                
+                
+                <%if(id != ""){ %>
                 <form method="post" action="comment.jsp?num=<%=num %>" class="comment_insert">
-                    <input type="text" name="comment" placeholder="내용을 입력하고 엔터를 쳐주세요.">
+                	<label for="comment"><%=id%><input type="text" name="comment" placeholder="내용을 입력하고 엔터를 쳐주세요."></label>
+                	<input type="hidden" name="id" value="<%=id %>">
+                	<input type="hidden" name="type" value="normal">
                 </form>
+                <%} %>
             </div>
         </div>
         <aside id="aside_second">
             광고
         </aside>
-    </div> 
+    </div>
+    <script>
+    	var comments = document.getElementsByClassName("comments");
+    	for(var i = 0; i < comments.length; i++){
+    		var count = 0;
+    		comments[i].addEventListener("click", function(){
+    			this.style.height = "130px";
+    		});
+    		
+    		comments[i].addEventListener("dblclick", function(){
+    			this.style.height = "50px";
+    		});
+    	}
+    	
+    
+    </script>
 </body>
 </html>
