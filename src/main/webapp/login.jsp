@@ -12,10 +12,10 @@
 <body>
     <div id="login_box">
         <a href="index.jsp" id="logo"><img src="imgs/logo.png" alt="logo"></a>
-        <form method="post" action="login_check.jsp">
+        <form name="loginBox" method="post" action="login_check.jsp">
             <input name="id" type="text" placeholder="id"><br/>
             <input name="pwd" type="password" placeholder="pwd"><br/>
-            <input type="submit" value="login">
+            <input class="btns" type="button" onclick="loginCheck()" value="login">
         </form>
         <button class="btns" id="btn">sign up</button>
     </div>
@@ -41,6 +41,19 @@
             loginbox.style.marginTop =  "30%";
             loginbox.style.opacity = "0%";      
         });
+        
+        
+        function loginCheck(){
+        	if(document.loginBox.id.value == ""){
+        		alert("아이디를 입력해주세요");
+        		return;
+        	}
+        	if(document.loginBox.pwd.value == ""){
+        		alert("비밀번호를 입력해주세요");
+        		return;
+        	}
+        	document.loginBox.submit();
+        }
         
         function signCheck(){
     		if(document.signBox.id.value == ""){
