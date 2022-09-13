@@ -200,19 +200,79 @@ public class PortMgr {
 		return res;
 	}
 	
-	public void insertComment(int num, String comment) {
+	// 댓글 목록 불러오기
+	public Vector<CommentBean> CommentList(int num){
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		Vector<CommentBean> v = new Vector<CommentBean>();
+		try {
+			String sql = "select * from comment_boards where bNum = ? order by cnum, ref, pos asc";
+			con = pool.getConnection();
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, num);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				CommentBean cBean = new CommentBean();
+				cBean.setcNum(rs.getInt("cNum"));
+				cBean.setbNum(rs.getInt("bNum"));
+				cBean.setcWriter(rs.getString("cWriter"));
+				cBean.setComment(rs.getString("comment"));
+				cBean.setRef(rs.getInt("ref"));
+				cBean.setPos(rs.getInt("pos"));
+				v.add(cBean);
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			pool.freeConnection(con, pstmt, rs);
+		}
+		return v;
+	}
+	
+	
+	// 일반 댓글 작성
+	public void insertComment(int num, String writer, String comment, int ref, int pos) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		try {
+			String sql = "insert into comment_boards(bNum, cWriter, comment, ref, pos) values(?, ?, ?, ?, ?)";
+			con = pool.getConnection();
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, num);
+			pstmt.setString(2, writer);
+			pstmt.setString(3, comment);
+			pstmt.setInt(4, ref);
+			pstmt.setInt(5, pos);
+			pstmt.executeUpdate();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			pool.freeConnection(con,pstmt);
+		}
+	}
+	
+	
+	// 답변 댓글 작성
+	public void insertRefComment(int num, String writer, String comment, int ref) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
+			String sql = "select max(pos) pos from comment_boards where ref = ?";
+			con = pool.createConnection();
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, num);
+			rs = pstmt.executeQuery();
+			rs.next();
+			int pos = rs.getInt("pos") + 1;
+			insertComment(num, writer, comment, ref, pos);
 			
 		}catch(Exception e) {
 			e.printStackTrace();
 		}finally {
 			pool.freeConnection(con,pstmt,rs);
 		}
-		
-		
 	}
 	
 	
@@ -234,15 +294,12 @@ public class PortMgr {
 				System.out.println("Sucess");
 				return id;
 			}
-			
-			
 		}catch(Exception e) {
 			e.printStackTrace();
 		}finally {
 			pool.freeConnection(con, pstmt);
 		}
 		return "login_fall";
-		
 	}
 	
 	
@@ -277,7 +334,6 @@ public class PortMgr {
 		}finally {
 			pool.freeConnection(con, pstmt, rs);
 		}
-		
 		return "fall";
 	}
 	
