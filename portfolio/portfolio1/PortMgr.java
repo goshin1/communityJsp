@@ -22,6 +22,7 @@ public class PortMgr {
 		}
 	}
 	
+	// 게시글 목록 가져오기
 	public Vector<BoardBean> getBoardList(String keyWord){
 		Vector<BoardBean> v = new Vector<BoardBean>();
 		Connection con = null;
@@ -71,6 +72,7 @@ public class PortMgr {
 		return v;
 	}
 	
+	// 전체 페이지 수 가져오기
 	public int getBoardCount() {
 		Connection con = null;
 		Statement stmt = null;
@@ -91,6 +93,7 @@ public class PortMgr {
 		return count;
 	}
 	
+
 	public BoardBean portContent(int num) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -123,7 +126,7 @@ public class PortMgr {
 		return bean;
 	}
 	
-	
+	// 조회수 증가
 	public void increaseView(int num) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -179,12 +182,13 @@ public class PortMgr {
 		return res;
 	}
 	
-	// 게시글 작성
+	// 게시글 삭제
 	public int deleteBoard(int num) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		int res = 0;
 		try {
+			deleteCommentList(num);
 			String sql = "delete from boards where num = ?";
 			con = pool.getConnection();
 			pstmt = con.prepareStatement(sql);
@@ -200,6 +204,58 @@ public class PortMgr {
 		return res;
 	}
 	
+	public BoardBean popularBoard() {
+		BoardBean bean = null;
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			String sql = "select * \r\n"
+					+ "from boards\r\n"
+					+ "where views = (select max(views) from boards);";
+			con = pool.getConnection();
+			pstmt = con.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				bean = new BoardBean();
+				bean.setNum(rs.getInt("num"));
+				bean.setWriter(rs.getString("writer"));
+				bean.setSubject(rs.getString("subject"));
+				bean.setContent(rs.getString("content"));
+				bean.setFile_name(rs.getString("file_name"));
+				bean.setFile_size(rs.getInt("file_size"));
+				bean.setViews(rs.getInt("views"));
+				bean.setReview(rs.getInt("review"));
+				bean.setWrite_date(rs.getString("write_date"));
+			}
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			pool.freeConnection(con, pstmt, rs);
+		}
+		
+		return bean;
+	}
+	
+	
+	// 게시글 댓글 목록 삭제하기
+	public void deleteCommentList(int bNum) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		try {
+			String sql = "delete from comment_boards where bNum = ?";
+			con = pool.getConnection();
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, bNum);
+			pstmt.executeUpdate();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			pool.freeConnection(con, pstmt);
+		}
+	}
+	
 	// 댓글 목록 불러오기
 	public Vector<CommentBean> CommentList(int num){
 		Connection con = null;
@@ -211,6 +267,36 @@ public class PortMgr {
 			con = pool.getConnection();
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, num);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				CommentBean cBean = new CommentBean();
+				cBean.setcNum(rs.getInt("cNum"));
+				cBean.setbNum(rs.getInt("bNum"));
+				cBean.setcWriter(rs.getString("cWriter"));
+				cBean.setComment(rs.getString("comment"));
+				cBean.setRef(rs.getInt("ref"));
+				cBean.setPos(rs.getInt("pos"));
+				v.add(cBean);
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			pool.freeConnection(con, pstmt, rs);
+		}
+		return v;
+	}
+	
+	// 댓글 별 답변 댓글 목록 불러오기
+	public Vector<CommentBean> ReCommentList(int cnum){
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		Vector<CommentBean> v = new Vector<CommentBean>();
+		try {
+			String sql = "select * from comment_boards where ref = ?";
+			con = pool.getConnection();
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, cnum);
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				CommentBean cBean = new CommentBean();
@@ -276,6 +362,63 @@ public class PortMgr {
 	}
 	
 	
+	// 댓글 삭제하기
+	public int deleteComment(int cNum) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		int res = 0;
+		try {
+			String sql = "delete from comment_boards where cNum = ?";
+			con = pool.getConnection();
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, cNum);
+			res = pstmt.executeUpdate();
+			decreaseReview(cNum);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			pool.freeConnection(con, pstmt);
+		}
+		return res;
+	}
+	
+	// 댓글 수 증가
+	public void increaseReview(int bNum) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		try {
+			String sql = "update boards set review = review + 1 where num = ?";
+			con = pool.getConnection();
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, bNum);
+			pstmt.executeUpdate();
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			pool.freeConnection(con, pstmt);
+		}
+	}
+	
+	// 댓글 수 감소
+		public void decreaseReview(int bNum) {
+			Connection con = null;
+			PreparedStatement pstmt = null;
+			try {
+				String sql = "update boards set review = review - 1 where num = ?";
+				con = pool.getConnection();
+				pstmt = con.prepareStatement(sql);
+				pstmt.setInt(1, bNum);
+				pstmt.executeUpdate();
+				
+			}catch(Exception e) {
+				e.printStackTrace();
+			}finally {
+				pool.freeConnection(con, pstmt);
+			}
+		}
+	
+	
 	// 로그인
 	public String login(String id, String pwd) {
 		Connection con = null;
@@ -291,7 +434,7 @@ public class PortMgr {
 			rs = pstmt.executeQuery();
 			rs.next();
 			if(rs.getInt(1) == 1){
-				System.out.println("Sucess");
+				
 				return id;
 			}
 		}catch(Exception e) {
@@ -303,6 +446,7 @@ public class PortMgr {
 	}
 	
 	
+	// 회원가입
 	public String sign(String id, String pwd, String name, String email) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
