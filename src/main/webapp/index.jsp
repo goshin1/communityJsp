@@ -42,7 +42,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Main</title>
-    <link href="style/style.css" type="text/css" rel="stylesheet">
+    <link href="style/style.css?ver=2" type="text/css" rel="stylesheet">
     <script>
     	function pageing(num){
     		document.pageForm.start.value = num;
@@ -58,10 +58,25 @@
             광고
         </aside>
         <div id="notice">
-            <a href="#" id="main_post">
-                <img src="imgs/test1.PNG" alt="">
-                <h2>어제의 인기글</h2>
-                <p>해당 글의 내용</p>
+        		<%
+            		BoardBean popBean = pMgr.popularBoard();
+					int popNum = popBean.getNum();
+            		String popSubject = popBean.getSubject();
+            		String popContent = popBean.getContent();
+            		String filename = null;
+            		if(!popBean.getFile_name().equals("") && popBean.getFile_name() != null)
+            			filename = "./fileupload"+popBean.getFile_name().split(",")[0];
+            		
+            		
+            	%>
+            <a href="post.jsp?num=<%=popNum %>" id="main_post">
+            	<%if(filename != null){ %>
+                <img src="<%=filename %>" alt="">
+                <%} else { %>
+                <div id="image_no">none</div>
+                <%} %>
+                <h2><%=popSubject %></h2>
+                <p><%=popContent %></p>
             </a>
             <div id="sub_post">
                 <div class="notice_block">
