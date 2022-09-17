@@ -15,7 +15,7 @@
 		int ref = Integer.parseInt(request.getParameter("ref"));
 		pMgr.insertRefComment(num, id, comment, ref);
 	}
-	
+	pMgr.increaseReview(num);
 	
 	response.sendRedirect("post.jsp?num="+num);
 %>
