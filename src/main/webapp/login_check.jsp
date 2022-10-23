@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ page import="portfolio1.*" %>
 <%
+
 	request.setCharacterEncoding("utf-8");
 	String id = request.getParameter("id");
 	String pwd = request.getParameter("pwd");
