@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ page import="portfolio1.*" %>
 <header>
         <div id="over">
             <a id="logo" href="./index.jsp">
@@ -44,11 +45,14 @@
                     <a href="index.jsp">공지사항</a>
                 </li>
 
-            	
+            	<%
+            		PortMgr pMgr2 = new PortMgr();
+            		if(pMgr2.checkManager(id)){
+            	%>
                 <li class="submenu">
                     <a href="manager.jsp">관리</a>
                 </li>
-                
+                <%} %>
             </ul>
         </div>
     </header>
