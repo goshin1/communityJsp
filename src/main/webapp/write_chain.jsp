@@ -5,6 +5,7 @@
 <%@ page import="java.util.*, java.io.*" %>
 <%@ page import="portfolio1.*" %>
 <% 
+	request.setCharacterEncoding("utf-8");
 	String saveFolder = "C:/Users/gci91/eclipse-workspace/portfolio1/src/main/webapp/fileupload";
 	String encType = "utf-8";
 	int maxSize = 100*1024*1024;
