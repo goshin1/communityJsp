@@ -33,6 +33,21 @@
     <link href="style/post_style.css" rel="stylesheet" type="text/css">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 	<link rel="icon" href="/favicon.ico" type="image/x-icon">
+	<script>
+		function showPopup(){
+			var width = 220;
+			var height = 400;
+			
+			var left = (window.screen.width / 2) - (width/2);
+			var top = (window.screen.height / 4);
+			
+			var windowStatus = 'width='+width+', height='+height+', left='+left+', top='+top+', scrollbars=yes, status=yes, resizable=no, titlebar=yes';
+			
+		    const url = "popup.jsp?num=<%=num%>&type=1";
+	
+			window.open(url, "report", windowStatus);
+		}
+	</script>
 </head>
 <body>
     <%@include file="header.jsp"%>
@@ -43,7 +58,7 @@
         </aside>
         <div id="notice">
             <div id="post_head"> 
-                <a href="#" id="siren">
+                <a href="javascript:showPopup()" id="siren">
                     <img src="imgs/siren.png" alt="siren">
                 </a>
                 <br/>
@@ -58,15 +73,18 @@
 
             <div id="post_body">
             	<%
-	             String[] fileArray = fileName.split(",");
-            	 if(fileArray.length > 1){
-	            	 for(int i = 0; i < fileArray.length; i++){ 
+            	 if(!fileName.equals("")){
+		             String[] fileArray = fileName.split(",");
+	            	 if(fileArray.length > 0){
+		            	 for(int i = 0; i < fileArray.length; i++){ 
 	            		
             	%>
             		<img src="<%=SAVEFOLDER+"/"+fileArray[i] %>" alt="image" class="content_img"><br/>
 	            <%
+		            	}
 	            	}
-            	}%>
+            	 }
+            	%>
             	<br/>
                	<span><%=bean.getContent() %></span>
 
@@ -74,7 +92,7 @@
                 	<!-- 수정, 삭제 버튼은 session의 ID를 저장하여 해당 글의 글쓴이와 동일할 경우에만 활성화 -->
                     
                     <%if(id.equals(bean.getWriter())){ %>
-                    <a class="btn" href="#">수정</a>
+                    <a class="btn" href="modify.jsp?num=<%=num%>">수정</a>
                     <a class="btn" href="post_delete.jsp?num=<%=num%>">삭제</a>
                     <%} %>
                     <a class="btn" href="index.jsp">목록</a>
@@ -146,6 +164,7 @@
     </div>
     <%if(id != ""){ %>
     <script>
+    
     	var comments = document.getElementsByClassName("comments");
     	for(var i = 0; i < comments.length; i++){
     		var count = 0;
