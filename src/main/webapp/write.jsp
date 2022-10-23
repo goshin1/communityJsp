@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="style/write_style.css" type="text/css" rel="stylesheet">
+    <link href="style/write_style.css?ver=1" type="text/css" rel="stylesheet">
     <title>Write</title>
 </head>
 <body>
@@ -26,7 +26,7 @@
                         <input type="file" multiple="multiple" onchange="createList(this)" name="fileobj" accept=".jpg, .jpeg, .png, .webp"> 이미지는 최대 5개까지 업로드 가능합니다.
                     </div>
                 </div>
-                <input id="submit_btn" type="submit" value="작성">
+                <input id="submit_btn" type="button" value="작성">
                 <input type="hidden" name="file_list">
             </form>
 
@@ -37,9 +37,20 @@
         </aside>
     </div>
     	<script>
-			
-	    	
-			function createList(obj){
+    		document.getElementById("submit_btn").addEventListener("click", function(){
+    			if(document.writeBoard.title.value == ""){
+    				alert("제목을 입력해주세요.");
+    				return;
+    			}
+    			if(document.writeBoard.content.value == ""){
+    				alert("내용을 입력해주세요.");
+    				return;
+    			}
+    			
+    			document.writeBoard.submit();
+    		});
+    	
+    		function createList(obj){
 				if(obj.files.length > 5){
 					alert("파일은 최대 5개까지 가능합니다.");
 					obj.value = "";
@@ -53,7 +64,6 @@
 				
 				document.writeBoard.file_list.value = res;
 			}
-			
     </script>
 </body>
 </html>
