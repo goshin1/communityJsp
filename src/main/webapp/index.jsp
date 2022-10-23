@@ -42,7 +42,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Main</title>
-    <link href="style/style.css?ver=2" type="text/css" rel="stylesheet">
+    <link href="style/style.css" type="text/css" rel="stylesheet">
     <script>
     	function pageing(num){
     		document.pageForm.start.value = num;
@@ -65,13 +65,13 @@
             		String popContent = popBean.getContent();
             		String filename = null;
             		if(!popBean.getFile_name().equals("") && popBean.getFile_name() != null)
-            			filename = "./fileupload"+popBean.getFile_name().split(",")[0];
-            		
+            			filename = "./fileupload/"+popBean.getFile_name().split(",")[0];
+            			
             		
             	%>
             <a href="post.jsp?num=<%=popNum %>" id="main_post">
             	<%if(filename != null){ %>
-                <img src="<%=filename %>" alt="">
+                <img src="<%=""+filename %>" alt="">
                 <%} else { %>
                 <div id="image_no">none</div>
                 <%} %>
