@@ -2,9 +2,8 @@
     pageEncoding="UTF-8"%>
 <%@ page import="java.io.*, java.text.*, java.lang.*, java.util.*, java.net.*" %>
 
+
 <%
-	// https://psychoria.tistory.com/765 해당 다운로드 방법 자료 주소
-	// 다운로드 시 뜨는 오류 수정
 	request.setCharacterEncoding("utf-8");
 	String root = getServletContext().getRealPath("/");
 	String savePath = root + "fileupload";
