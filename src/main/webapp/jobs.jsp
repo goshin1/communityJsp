@@ -1,5 +1,55 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ page import="java.util.*" %>
+<%@ page import="portfolio1.*" %>
+<%
+	request.setCharacterEncoding("utf-8");
+	PortMgr pMgr = new PortMgr();
+	Vector<JobBoardBean> v = new Vector<JobBoardBean>();
+	String[] searchType = {};
+	String[] jobs = {};
+	String[] degs = {};
+	String[] exps = {};
+	String bArea = "";
+	String[] sArea = {};
+	
+	if(request.getParameter("searchType") != null){
+		
+		searchType = request.getParameter("searchType").split(",");
+		
+		
+		if(!searchType[0].equals("0"))
+			jobs = request.getParameter("sJob").split(",");	
+		if(!searchType[1].equals("0"))
+			degs = request.getParameter("sDeg").split(",");
+		if(!searchType[2].equals("0"))
+			exps = request.getParameter("sExp").split(",");
+		if(!searchType[3].equals("0"))
+			bArea = request.getParameter("sBArea");
+		if(!searchType[4].equals("0"))
+			sArea = request.getParameter("sSArea").split(",");
+		
+		
+	}
+	v = pMgr.getJobBoardList(searchType, jobs, degs,exps, bArea, sArea);
+
+	int start = 0;
+	if(request.getParameter("start") != null){
+		start = Integer.parseInt(request.getParameter("start"));	
+	}
+
+	
+	int rowRange = 10;
+	int pageRange = 5;
+	int rowStart = start * rowRange;
+	
+	int totalSize = v.size();
+	int nextPage = (start + 5) > (totalSize / 10) ? totalSize / 10 : start + pageRange;
+	int pageLimit = (start + pageRange) > (totalSize / 10) ? totalSize / 10 : start + pageRange;
+	int prevPage = start - 5 > 0 ? start - 5 : start - start;
+	
+	
+%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,7 +57,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jobs</title>
-    <link href="style/jobs_style.css" type="text/css" rel="stylesheet">
+    <link href="style/jobs_style.css?ver=2" type="text/css" rel="stylesheet">
 </head>
 <body>
     <%@include file="header.jsp"%>
@@ -18,16 +68,26 @@
         </aside>
         <div id="notice">
             <div id="main_post">
-                <form method="get" action="">
+                <form method="get" action="jobs.jsp" name="jobSearch">
                     <!-- 메뉴 내용은 데이터베이스에 각각 읽는 것으로 만들기 -->
                     <!-- 직무 테이블을 만들어 그 내용을 li태그로 작성 -->
                     <div class="option_box">
                         직무
                         <ul class="main_option">
-                            <li><label for="job1"><input type="checkbox" name="job" id="job1" value="프론트개발">프론트개발</label></li>
-                            <li><label for="job2"><input type="checkbox" name="job" id="job2" value="백엔드개발">백앤드개발</label></li>
+                            <li><label for="job1"><input type="checkbox" name="job" id="job1" value="프론트엔드개발">프론트엔드개발</label></li>
+                            <li><label for="job2"><input type="checkbox" name="job" id="job2" value="백엔드개발">백엔드개발</label></li>
                             <li><label for="job3"><input type="checkbox" name="job" id="job3" value="웹프로그래머">웹프로그래머</label></li>
                             <li><label for="job4"><input type="checkbox" name="job" id="job4" value="시스템프로그래머">시스템프로그래머</label></li>
+                            <li><label for="job5"><input type="checkbox" name="job" id="job5" value="모바일개발">모바일개발</label></li>
+                            <li><label for="job6"><input type="checkbox" name="job" id="job6" value="풀스택개발">풀스택개발</label></li>
+                            <li><label for="job7"><input type="checkbox" name="job" id="job7" value="임베디드개발">임베디드개발</label></li>
+                            <li><label for="job8"><input type="checkbox" name="job" id="job8" value="PC어플리케이션개발">PC어플리케이션개발</label></li>
+                            <li><label for="job9"><input type="checkbox" name="job" id="job9" value="DBA">DBA</label></li>
+                            <li><label for="job10"><input type="checkbox" name="job" id="job10" value="TA">TA</label></li>
+                            <li><label for="job11"><input type="checkbox" name="job" id="job11" value="AA">AA</label></li>
+                            <li><label for="job12"><input type="checkbox" name="job" id="job12" value="기타개발">기타개발</label></li>
+                            <li><label for="job13"><input type="checkbox" name="job" id="job13" value="퍼블리셔">퍼블리셔</label></li>
+                            <li><label for="job14"><input type="checkbox" name="job" id="job14" value="QA">QA</label></li>
                         </ul>
                     </div>
 
@@ -35,7 +95,7 @@
                         학위
                         <ul class="main_option">
                             <li><label for="deg1"><input type="checkbox" name="deg" id="deg1" value="고졸">고졸</label></li>
-                            <li><label for="deg2"><input type="checkbox" name="deg" id="deg2" value="2,3년제학사">2,3년제 학사</label></li>
+                            <li><label for="deg2"><input type="checkbox" name="deg" id="deg2" value="2/3년제학사">2/3년제 학사</label></li>
                             <li><label for="deg3"><input type="checkbox" name="deg" id="deg3" value="4년제 학사">4년제 학사</label></li>
                             <li><label for="deg4"><input type="checkbox" name="deg" id="deg4" value="석사">석사</label></li>
                             <li><label for="deg5"><input type="checkbox" name="deg" id="deg5" value="학사">학사</label></li>
@@ -79,69 +139,142 @@
                         
                     </div>
                     <input id="job_search" type="submit" value="search">
+                    <!-- 직무, 학위, 경력, 큰지역, 작은지역 -->
+                    <input type="hidden" name="sJob">
+                    <input type="hidden" name="sDeg">
+                    <input type="hidden" name="sExp">
+                    <input type="hidden" name="sBArea">
+                    <input type="hidden" name="sSArea">
+                    <input type="hidden" name="searchType">
                 </form>
             </div>
             <div id="sub_post">
 
+				<%
+				int rowLimit = rowStart + rowRange > totalSize ? rowStart + totalSize % 10 : rowStart + rowRange;
+				
+				for(int i = rowStart; i < rowLimit; i++){
+					
+					JobBoardBean jBean = v.get(i);
+					String date = jBean.getWrite_date().substring(0, 10);
+					int bNum = jBean.getNum();
+				%>
                 <div class="notice_block">
-                    <a href="">연습용 제목</a>
+                    <a href="jobPost.jsp?num=<%=bNum %>" class="jobs_info">
+                   		<%=jBean.getSubject() %> | <%=jBean.getJob() %> | <%=jBean.getExp() %> | <%=jBean.getMain_area() + " " + jBean.getSub_area() %>
+                    </a>
                     <div class="jobs_block">
-                        <span class="jobs_company">OO회사</span>
-                        <span class="jobs_degree">무관</span><br/>
-                        <span cla="jobs_date">20022-06-25</span>
+                        <span class="jobs_company"><%=jBean.getCompany() %></span>
+                        <span class="jobs_degree"><%=jBean.getDegree() %></span><br/>
+                        <span class="jobs_date"><%=date %></span>
                     </div>
                 </div>
-
-                <div class="notice_block">
-                    <a href="">연습용 제목</a>
-                    <div class="jobs_block">
-                        <span class="jobs_company">OO회사</span>
-                        <span class="jobs_degree">무관</span><br/>
-                        <span class="jobs_date">20022-06-25</span>
-                    </div>
-                </div>
+				<%} %>
             </div>
-
+			<%if(id != ""){ %>
             <a id="post_btn" href="jobs_write.jsp">글쓰기</a>
-
+			<%} %>
             <div id="pageing">
-                <a href="#" class="page_block">&lt;</a>
-                <a href="#" class="page_block">1</a>
-                <a href="#" class="page_block">2</a>
-                <a href="#" class="page_block">3</a>
-                <a href="#" class="page_block">4</a>
-                <a href="#" class="page_block">5</a>
-                <a href="#" class="page_block">&gt;</a>
+                <%
+            // 마지막 페이지 단락 
+            if(totalSize / rowRange == (start + 1) && totalSize % rowRange > 0){
+            	
+            	if(start > 0){
+            		
+            %>	
+            	<a href="javascript:pageing(<%=prevPage %>)" class="page_block">&lt;</a>
+           <% 
+            	}
+            	pageLimit = start + (totalSize % rowRange) + 1 > totalSize / 10 + 1 ? totalSize / 10 + 1 : start + (totalSize % rowRange) + 1;
+            	
+            	for(int i = start; i < pageLimit; i++){
+           %>
+            	
+            	<%if (i != start){ %>
+                <a href="javascript:pageing(<%=i %>)" class="page_block"><%=i + 1 %></a>
+                <%}else{ %>
+                <a href="javascript:pageing(<%=i %>)" class="page_block" style="color:skyblue"><%=i + 1 %></a>
+                <%} %>
+            	
+            <%
+            	}
+            } else {
+            // 평소 페이지 단락
+            	if(start > 0){
+            	
+            %>
+                <a href="javascript:pageing(<%=prevPage %>)" class="page_block">&lt;</a>
+            <%}
+          
+            %>
+            
+            
+            <% 	
+				for(int i = start; i < pageLimit; i++){
+			%>
+					<%if (i != start){ %>
+                <a href="javascript:pageing(<%=i %>)" class="page_block"><%=i + 1 %></a>
+                	<%}else{ %>
+                <a href="javascript:pageing(<%=i %>)" class="page_block" style="color:skyblue"><%=i + 1 %></a>
+                	<%} %>
+            <%
+				}
+				
+	            if(totalSize > start){
+            %>
+                <a href="javascript:pageing(<%=nextPage %>)" class="page_block">&gt;</a>
+            <%	} %>
+            
+            <%
+            } // 151개일경우 10개씩 할 경우 1개가 남는데 이러한 경우가 아닐경우 
+            
+            %>
             </div>
         </div>
         <aside id="aside_second">
             광고
         </aside>
+        <form method="get" name="pageForm" action="jobs.jsp">
+	    	<input type="hidden" name="start" value="<%=start %>">
+	    	<input type="hidden" name="sJob" value="<%=jobs%>">
+            <input type="hidden" name="sDeg" value="<%=degs%>">
+            <input type="hidden" name="sExp" value="<%=exps%>">
+            <input type="hidden" name="sBArea" value="<%=bArea%>">
+            <input type="hidden" name="sSArea" value="<%=sArea%>">
+            <input type="hidden" name="searchType" value="<%=searchType%>">
+    	</form>
     </div>
     <script>
-        let checks = document.getElementsByTagName("input");
+    
+    	// 직무 경력 학위
         let searchs = "";
-        for(let j = 0; j < checks.length; j++){
-            if (checks[j].type == "checkbox"){
-                checks[j].addEventListener("click", function(){
-                    if (searchs.includes(checks[j].value) == false){
-                        searchs += (checks[j].value + ",");
-                        let par = checks[j].parentElement;
-                        par.style.backgroundColor = "#404040";
-                        par.style.color = "#ffffff";
-                        par.style.transition = "all 0.2s";
-                    }
-                    else{
-                        searchs = searchs.replace(checks[j].value + ",", "");
-                        let par = checks[j].parentElement;
-                        par.style.backgroundColor = "#ffffff";
-                        par.style.color = "#000000";
-                        par.style.transition = "all 0.2s";
-                    }
-                });
-            }
-        }
+        let searchType = [0,0,0,0,0];
+        let checkboxs = ["job","deg","exp"];
+      
 
+        for(let i = 0; i < checkboxs.length; i++){
+	        let degs = document.getElementsByName(checkboxs[i]);
+	        for(let j = 0; j < degs.length; j++){
+	        	degs[j].addEventListener("click", function(){
+	                    if (searchs.includes(degs[j].value) == false){
+	                        searchs += (degs[j].value + ",");
+	                        let par = degs[j].parentElement;
+	                        par.style.backgroundColor = "#404040";
+	                        par.style.color = "#ffffff";
+	                        par.style.transition = "all 0.2s";
+	                    }
+	                    else{
+	                        searchs = searchs.replace(degs[j].value + ",", "");
+	                        let par = degs[j].parentElement;
+	                        par.style.backgroundColor = "#ffffff";
+	                        par.style.color = "#000000";
+	                        par.style.transition = "all 0.2s";
+	                    }
+	             });
+	        }
+        }
+        
+        // 지역 선택
         let main_area = document.getElementById("main_area");
         let areas = main_area.children;
         let sub_area = [['강남구','강동구','강북구','강서구','관악구','광진구','구로구',
@@ -197,10 +330,11 @@
         }
 
 
-
+		let area_idx = 0;
         for(let i = 0; i < areas.length; i ++){
             areas[i].style.color = "#000000";
             areas[i].addEventListener("click", function(){
+            	area_idx = i;
                 let detail = document.getElementById("detail_area");
                 if(this.style.color == "rgb(0, 0, 0)"){
                     this.style.color = "#00B9FF";
@@ -218,11 +352,12 @@
                                 this.parentElement.parentElement.style.backgroundColor = "#ffffff";
                                 this.parentElement.style.color = "#000000";
                                 searchs = searchs.replace(areas[i].innerHTML + " " + sel_areas[k].value + ",", "");    
+                                
                             }
                             else{
                                 this.parentElement.parentElement.style.backgroundColor = "#404040";
                                 this.parentElement.style.color = "#ffffff";
-                                searchs += areas[i].innerHTML + " " + sel_areas[k].value + ",";
+                                searchs += areas[i].innerHTML + "," + sel_areas[k].value + ",";
                             }
                         });
                         
@@ -236,12 +371,51 @@
 
             })
         }
-
-        
+       	
+       	let testArray = [[],[],[],[],[]];
+       	
         document.getElementById("job_search").addEventListener("click", function(){
-            searchs = searchs.substr(0, searchs.length - 1);
-            alert(searchs);
+        	for(let i = 0; i < checkboxs.length; i++){
+        		let boxs = document.getElementsByName(checkboxs[i]);
+        		let idx = 0;
+    	        for(let j = 0; j < boxs.length; j++){
+    	        	if(boxs[j].checked == true){
+    	        		searchType[i] = idx + 1;
+    	        		testArray[i][idx] = boxs[j].value;
+    	        		idx++;
+    	        	}
+    	        }
+        	}
+        	
+        	
+        	let dArea = document.getElementsByClassName("sel_area");
+        	let s_idx = 0;
+        	
+        	for(let i = 0; i < dArea.length; i++){
+        		if(dArea[i].checked == true){
+        			searchType[3] = 1;
+        			searchType[4] = s_idx + 1;
+        			testArray[3][0] = areas[area_idx].innerHTML;
+        			testArray[4][s_idx] = dArea[i].value;
+        			s_idx++;
+        		}
+        		
+        	}
+        	
+        	document.jobSearch.searchType.value = searchType;
+        	document.jobSearch.sJob.value = testArray[0].join();
+        	document.jobSearch.sDeg.value = testArray[1].join();
+        	document.jobSearch.sExp.value = testArray[2].join()
+        	document.jobSearch.sBArea.value = testArray[3];
+        	document.jobSearch.sSArea.value = testArray[4].join();
+
+            document.jobSearch.submit();
         });
+        
+        function pageing(num){
+			document.pageForm.start.value = num;
+			document.pageForm.submit();
+		}
 
 
     </script>
