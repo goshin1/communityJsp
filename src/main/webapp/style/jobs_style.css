@@ -1,0 +1,308 @@
+@charset "utf-8";
+
+/*header*/
+
+*{
+    margin: 0 auto;
+    list-style : none;
+    text-decoration: none;
+    color: #404040;
+}
+
+
+header{
+    width: 100%;
+    height: 200px;
+    margin-top: 10px;
+}
+
+#over, #under{
+    width: 100%;
+    height: 80px;
+    border-bottom : 1px solid #404040;
+}
+
+#logo{
+    margin: 10px 190px;
+    width: 200px;
+    display: block;
+}
+
+#logo img{
+    width: 100%;
+}
+
+
+#search_box{
+    margin-top: -60px;
+    margin-right: 400px;
+    float: right;
+}
+
+#search_box input{
+    width: 250px;
+    border-radius: 8px;
+    text-align: right;
+}
+
+#colorChange{
+    margin-top: -65px;
+    margin-right: 280px;
+    width: 80px;
+    height: 30px;
+    float: right;
+    border: 1px solid #404040;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+#change{
+    margin: 0;
+    width: 40px;
+    height: 50px;
+    background-color: #00B9FF;
+    border-right: 1px solid #404040;
+    float: left;
+}
+
+
+#login{
+    text-align: center;
+    margin-top: -65px;
+    margin-right: 200px;
+    width: 50px;
+    height: 30px;
+    line-height: 30px;
+    border: 1px solid #404040;
+    border-radius: 8px;
+    float: right;
+
+}
+
+#menu{
+    width: 80%;
+    margin-left: 80px;
+}
+
+.submenu{
+    margin : 25px 50px;
+    font-size: 15px;
+    text-align: center;
+    width: 100px;
+    float: left;
+}
+
+.submenu a:hover{
+    transition: all 0.1s;
+    color:#00B9FF;
+}
+
+
+/*main*/
+
+#content{
+    margin: 0 auto;
+    width: 100%;
+}
+
+aside{
+    width: 8%;
+    height : 500px;
+    border: 1px solid #404040;
+    margin: 300px 41px;
+    float: left;
+}
+
+#notice{
+    width: 75%;
+    float: left;
+    height: 100px;
+}
+
+#main_post{
+    width: 100%;
+    height: 200px;
+    border: 1px solid #404040;
+    display: block;
+}
+
+
+
+.option_box{
+    margin : 15px 30px;
+    width: 240px;
+    height: 160px;
+    float: left;
+}
+
+
+.main_option{
+    width: 240px;
+    height: 130px;
+    margin-top: 10px;
+    border : 1px solid #404040;
+    overflow: auto;
+    padding-left: 30px;
+    text-indent: -38px;
+}
+
+.main_option > li{
+    text-indent: 0px;
+    width: 116%;
+    height: 25px;
+    line-height: 25px;
+    margin-left: -39px;
+    text-align: center;
+}
+
+.main_option label{
+    width: 100%;
+    margin-left: 0px;
+    height: 25px;
+    display: block;
+    margin-left: 0px;
+    cursor: pointer;
+}
+
+.main_option input{
+    display: none;
+}
+
+
+#main_area{
+    width: 100px;
+    margin : 10px 0px;
+}
+
+#main_area li{
+	cursor : pointer;
+    transition: all 0.2s;
+    color: #000000;
+}
+
+#detail_area{
+    overflow: auto;
+    margin-left: -138px;
+    margin-top: 46px;
+    width: 200px;
+    height: 130px;
+    border-right: 1px solid #404040;
+    border-top: 1px solid #404040;
+    border-bottom: 1px solid #404040;
+}
+
+#detail_area li{
+    text-indent: 10px;
+    height: 25px;
+    line-height: 25px;
+    transition: all 0.2s;
+    color: wheat;
+}
+
+#detail_area label{
+    width: 100%;
+    display: block;
+    cursor: pointer;
+}
+
+
+#detail_area input[type=checkbox]{
+    display: none;
+}
+
+#job_search{
+    border: none;
+    background-color: #404040;
+    color: #ffffff;
+    margin-top:90px;
+    margin-left: -10px;
+    width: 120px;
+    height: 25px;
+}
+
+
+
+#sub_post{
+    margin-top: 150px;
+    width: 100%;
+    height: 600px;
+}
+
+.notice_block{
+    text-indent: 10px;
+    margin-top: 35px;
+    width: 100%;
+    height: 40px;
+    border-bottom: 1px solid #404040;
+    
+}
+
+.notice_block span{
+    float: right;
+    text-align: center;
+    position: relative;
+    width: 120px;
+}
+
+
+.jobs_info{
+	display : block;
+	text-align : left;
+	float : left;
+	width : 1000px;
+	height : 50px;
+	line-height : 50px;
+	margin-top : -15px;
+}
+
+.jobs_block{
+    float: right;
+    width: 250px;
+    height: 50px;
+    margin-top: -15px;
+    margin-right: 10px;
+}
+
+.jobs_block span{
+    display: block;
+    height: 25px;
+    line-height: 25px;
+}
+
+.jobs_block span:nth-child(n + 3){
+    width: 250px;
+    text-align: center;
+}
+
+.notice_comments img{
+    position: absolute;
+    width: 50px;
+    margin-left: -30px;
+}
+
+
+
+#post_btn{
+    line-height: 30px;
+    text-align: center;
+    color: #ffffff;
+    background-color: #404040;
+    width: 70px;
+    height: 30px;
+    display: block;
+    float: right;
+}
+
+#pageing{
+    margin-top: 100px;
+    width: 210px;
+    height: 30px;
+    text-align: center;
+}
+
+.page_block{
+    float: left;
+    display: block;
+    width: 30px;
+    height: 30px;
+}
