@@ -4,6 +4,7 @@
 	request.setCharacterEncoding("utf-8");
 	int rNum = Integer.parseInt(request.getParameter("rNum"));
 	int bNum = Integer.parseInt(request.getParameter("bNum"));
+	String write_date = request.getParameter("write_date");
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -26,8 +27,9 @@
         </select>
         <br/>
         <input type="submit">
-        <input type="hidden" name="num" value="">
-        
+        <input type="hidden" name="rNum" value="<%=rNum%>">
+        <input type="hidden" name="bNum" value="<%=bNum%>">
+        <input type="hidden" name="write_date" value="<%=write_date%>">
     </form>
 </body>
 </html>
