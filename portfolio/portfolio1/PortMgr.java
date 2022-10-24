@@ -1,11 +1,15 @@
 package portfolio1;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Vector;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.servlet.ServletRequest;
 
@@ -22,6 +26,8 @@ public class PortMgr {
 			e.printStackTrace();
 		}
 	}
+	
+
 	// 관리자 계정 확인
 	public boolean checkManager(String id) {
 		Connection con = null;
@@ -47,6 +53,24 @@ public class PortMgr {
 		return b;
 	}
 	
+	// 신고 된 회원 정지일자 작성
+	public void setStopDate(String writer, String date) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		try {
+			String sql = "insert into problem_members values(?, ?)";
+			con = pool.getConnection();
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, writer);
+			pstmt.setString(2, date);
+			pstmt.executeUpdate();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			pool.freeConnection(con, pstmt);
+		}
+	}
+	
 	// 게시글 작성자 조회
 	public String selectWriter(int num) {
 		Connection con = null;
@@ -54,7 +78,7 @@ public class PortMgr {
 		ResultSet rs = null;
 		String writer = null;
 		try {
-			String sql = "select * from boards where writer = ?";
+			String sql = "select * from boards where num = ?";
 			con = pool.getConnection();
 			pstmt = con.prepareStatement(sql);
 			rs = pstmt.executeQuery();
