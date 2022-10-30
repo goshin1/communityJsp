@@ -10,6 +10,8 @@ public class BoardBean {
 	private int views;
 	private int review;
 	private String write_date;
+	private int menu_type;
+	
 	
 	public int getViews() {
 		return views;
@@ -64,6 +66,12 @@ public class BoardBean {
 	}
 	public void setFile_size(int file_size) {
 		this.file_size = file_size;
+	}
+	public int getMenu_type() {
+		return menu_type;
+	}
+	public void setMenu_type(int menu_type) {
+		this.menu_type = menu_type;
 	}
 	
 }
