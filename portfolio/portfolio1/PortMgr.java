@@ -8,10 +8,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Vector;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-
-import javax.servlet.ServletRequest;
+import java.time.LocalDate;
 
 public class PortMgr {
 	private DBConnectionMgr pool;
@@ -41,7 +38,6 @@ public class PortMgr {
 			pstmt.setString(1, id);
 			rs = pstmt.executeQuery();
 			if(rs.next()) {
-				System.out.print(rs.getString("manager"));
 				b = true;
 			}
 			
@@ -52,6 +48,7 @@ public class PortMgr {
 		}
 		return b;
 	}
+	
 	
 	// 신고 된 회원 정지일자 작성
 	public void setStopDate(String writer, String date) {
@@ -71,6 +68,24 @@ public class PortMgr {
 		}
 	}
 	
+	// 정지 일자가 끝난 회원 삭제
+	public void deleteStopDate(String date) {
+		Connection con = null;
+		Statement stmt = null;
+		try {
+			String sql = "delete from problem_members where report_date like '"+date+"%'";
+			con = pool.createConnection();
+			stmt= con.createStatement();
+			stmt.executeUpdate(sql);
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			pool.freeConnection(con, stmt);
+		}
+	}
+	
+	
 	// 게시글 작성자 조회
 	public String selectWriter(int num) {
 		Connection con = null;
@@ -81,6 +96,7 @@ public class PortMgr {
 			String sql = "select * from boards where num = ?";
 			con = pool.getConnection();
 			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, num);
 			rs = pstmt.executeQuery();
 			if(rs.next())
 				writer = rs.getString("writer");
@@ -380,7 +396,7 @@ public class PortMgr {
 	
 	
 	// 게시글 목록 가져오기
-	public Vector<BoardBean> getBoardList(String keyWord){
+	public Vector<BoardBean> getBoardList(String keyWord, int menu_type){
 		Vector<BoardBean> v = new Vector<BoardBean>();
 		Connection con = null;
 		Statement stmt = null;
@@ -389,9 +405,9 @@ public class PortMgr {
 		
 		try {
 			if(keyWord == null) {
-				sql = "select * from boards order by num desc";
+				sql = "select * from boards memu_type = "+menu_type+" order by num desc";
 			} else {
-				sql = "select * from boards where content like '%" + keyWord + "%' or subject like '%" + keyWord + "%' order by num desc";
+				sql = "select * from (select * from boards as b2 where menu_type = "+menu_type+") as b1 where content like '%" + keyWord + "%' or subject like '%" + keyWord + "%' order by num desc";
 			}
 			con = pool.getConnection();
 			stmt = con.createStatement();
@@ -502,7 +518,7 @@ public class PortMgr {
 	}
 	
 	// 게시글 작성
-	public int insertBoard(String writer, String subject, String content, String file_name, int file_size) {
+	public int insertBoard(String writer, String subject, String content, String file_name, int file_size, int menu_type) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		PreparedStatement pstmt2 = null;
@@ -511,13 +527,14 @@ public class PortMgr {
 		int res = -1;
 		try {
 			con = pool.getConnection();
-			sql = "insert into boards(writer, subject, content, file_name, file_size, views, review) values(?, ?, ?, ?, ?, 0, 0)";
+			sql = "insert into boards(writer, subject, content, file_name, file_size, views, review, menu_type) values(?, ?, ?, ?, ?, 0, 0, ?)";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, writer);
 			pstmt.setString(2, subject);
 			pstmt.setString(3, content);
 			pstmt.setString(4, file_name);
 			pstmt.setInt(5, file_size);
+			pstmt.setInt(6, menu_type);
 			pstmt.executeUpdate();
 			pstmt.close();
 			
@@ -537,8 +554,7 @@ public class PortMgr {
 	
 	// 게시글 수정
 	public int modifyBoard(int num, String writer, String subject, String content, String file_name, int file_size) {
-		Connection con = null;
-		PreparedStatement pstmt = null;
+		Connection con = null;		PreparedStatement pstmt = null;
 		int res = -1;
 		try {
 			String sql = "update boards set subject=?, content=?, file_name=?, file_size=? where num = ? and writer = ?";
@@ -583,7 +599,7 @@ public class PortMgr {
 	}
 	
 	// 가장 인기 있는 게시글
-	public BoardBean popularBoard() {
+	public BoardBean popularBoard(int menu_type) {
 		BoardBean bean = null;
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -591,9 +607,10 @@ public class PortMgr {
 		try {
 			String sql = "select * \r\n"
 					+ "from boards\r\n"
-					+ "where views = (select max(views) from boards);";
+					+ "where views = (select max(views) from boards where menu_type = ?);";
 			con = pool.getConnection();
 			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, menu_type);
 			rs = pstmt.executeQuery();
 			if(rs.next()) {
 				bean = new BoardBean();
@@ -824,6 +841,38 @@ public class PortMgr {
 		return "login_fall";
 	}
 	
+	// 로그인 시 정지된 계정인지 확인
+	public String problemMemberCheck(String id) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			String sql = "select * from problem_members where writer = ?";
+			con = pool.createConnection();
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, id);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				String date = rs.getString("report_date").substring(0, 10);
+				String now  = LocalDate.now().toString();
+				if (now.equals(date)) {
+					return "sucess";
+				}
+				return date;
+			} else {
+				return "sucess";
+			}
+			
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			pool.freeConnection(con, pstmt, rs);
+		}
+		
+		
+		return "fall";
+	}
 	
 	// 회원가입
 	public String sign(String id, String pwd, String name, String email) {
@@ -872,10 +921,7 @@ public class PortMgr {
 			for(int i = 0; i < 150; i++) {
 				sql = "insert into boards(writer, subject, content, file_name, file_size, views, review) values('1111', '테스트"+i+"', 'content"+i+"','', 0, 0, 0)";
 				int check = stmt.executeUpdate(sql);
-				if (check != 0)
-					System.out.println("start sucess!");
-				else
-					System.out.println("start fall");
+				
 			}
 		}catch(Exception e){
 			e.printStackTrace();
