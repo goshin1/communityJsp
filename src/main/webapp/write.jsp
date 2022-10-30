@@ -1,5 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%
+	request.setCharacterEncoding("utf-8");
+	String menu_type = request.getParameter("menu_type");
+%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,6 +32,7 @@
                 </div>
                 <input id="submit_btn" type="button" value="작성">
                 <input type="hidden" name="file_list">
+                <input type="hidden" name="menu_type" value="<%=menu_type%>">
             </form>
 
             

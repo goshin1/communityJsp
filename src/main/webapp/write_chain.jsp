@@ -16,6 +16,7 @@
 	String title = "";
 	String content = "";
 	String Filename = "";
+	int menu_type = 1;
 	
 	
 	try{
@@ -23,7 +24,7 @@
 
 		title = multi.getParameter("title");
 		content = multi.getParameter("content");
-		
+		menu_type = Integer.parseInt(multi.getParameter("menu_type"));
 		
 		File dir = new File(saveFolder+"/");
 		String dbFiles = "";
@@ -58,11 +59,11 @@
 		
 		
 		PortMgr pMgr = new PortMgr();
-		int res = pMgr.insertBoard(user, title, content, dbFiles, totalSize);
+		int res = pMgr.insertBoard(user, title, content, dbFiles, totalSize, menu_type);
 		if(res <= 0){
 			out.println("<script>alert('게시글 작성에 실패하였습니다.'); history.back();</script>");
 		}else{
-			response.sendRedirect("post.jsp?num="+res);	
+			response.sendRedirect("index.jsp");	
 		}
 	}catch(IOException ioe){
 		System.out.println(ioe);
