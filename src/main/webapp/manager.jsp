@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ page import="java.util.*" %>
+<%@ page import="java.util.*, java.time.LocalDate" %>
 <%@ page import="portfolio1.*" %>
 <%
 	Vector<ReportBean> v = new Vector<ReportBean>();
@@ -10,6 +10,9 @@
 	if(request.getParameter("cancel") != null){
 		pMgr.deleteReport(Integer.parseInt(request.getParameter("cancel")));
 	}
+	
+	String now  = LocalDate.now().toString();
+	pMgr.deleteStopDate(now);
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -20,7 +23,7 @@
     <title>Manager</title>
     <link href="style/manager.css?ver=2" type="text/css" rel="stylesheet">
     <script>
-		function showPopup(rNum, bNum){
+		function showPopup(rNum, bNum, write_date){
 			var width = 220;
 			var height = 400;
 			
@@ -29,7 +32,7 @@
 			
 			var windowStatus = 'width='+width+', height='+height+', left='+left+', top='+top+', scrollbars=yes, status=yes, resizable=no, titlebar=yes';
 			
-		    const url = "report_popup.jsp?rNum="+rNum+"&bNum="+bNum;
+		    const url = "report_popup.jsp?rNum="+rNum+"&bNum="+bNum+"&write_date="+write_date;
 	
 			window.open(url, "report", windowStatus);
 		}
@@ -55,6 +58,7 @@
 					ReportBean bean = v.get(i);
 					int rNum = bean.getNum();
 					int bNum = bean.getrNum();
+					String write_date = bean.getWrite_date();
 				%>
                 <tr>
                     <td>
@@ -69,10 +73,10 @@
                      
                     <%if(bean.getBoardType() == 2){ %>
                     <td><a href="jobs_delete.jsp?num=<%=bNum %>"><img src="imgs/check.png" alt="check"></a></td>
-                    <td><a href="javascript:showPopup(<%=rNum%>, <%=bNum%>)"><img src="imgs/check.png" alt="check"></a></td>
+                    <td><a href="javascript:showPopup(<%=rNum%>, <%=bNum%>, '<%=write_date%>')"><img src="imgs/check.png" alt="check"></a></td>
                     <%} else {%>
                     <td><a href="post_delete.jsp?num=<%=bNum %>&rNum=<%=rNum%>"><img src="imgs/check.png" alt="check"></a></td>
-                    <td><a href="javascript:showPopup(<%=rNum%>, <%=bNum%>)"><img src="imgs/check.png" alt="check"></a></td>
+                    <td><a href="javascript:showPopup(<%=rNum%>, <%=bNum%>, '<%=write_date%>')"><img src="imgs/check.png" alt="check"></a></td>
                     <%} %>
                     <td><a href="manager.jsp?cancel=<%=rNum%>"><img src="imgs/check.png" alt="check"></a></td>
                 </tr>
