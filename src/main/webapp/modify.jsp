@@ -9,7 +9,6 @@
 	
 	int num = Integer.parseInt(request.getParameter("num"));
 	
-	
 	BoardBean bean = pMgr.portContent(num);
 
 	String fileName =  bean.getFile_name();
