@@ -7,10 +7,9 @@
 	int rNum = Integer.parseInt(request.getParameter("rNum"));
 	int bNum = Integer.parseInt(request.getParameter("bNum"));
 	String write_date = request.getParameter("write_date");
-	int addDate = Integer.parseInt(request.getParameter("sel"));
-	
+	int addDate = Integer.parseInt(request.getParameter("day"));
 	try {
-		SimpleDateFormat dtFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+		SimpleDateFormat dtFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 		Calendar cal = Calendar.getInstance();
 		Date dt = dtFormat.parse(write_date);
 		
@@ -22,7 +21,7 @@
 		PortMgr pMgr = new PortMgr();
 		String writer = pMgr.selectWriter(bNum);
 		pMgr.setStopDate(writer, modifyDate);
-		pMgr.decreaseReview(rNum);
+		pMgr.deleteReport(rNum);
 		out.println("<script>window.close()</script>");
 	} catch (Exception e) {
 		// TODO Auto-generated catch block
