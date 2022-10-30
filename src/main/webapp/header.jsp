@@ -30,19 +30,19 @@
         <div id="under">
             <ul id="menu">
                 <li class="submenu">
-                    <a href="index.jsp">게시판</a>
+                    <a href="index.jsp?menu_type=1">게시판</a>
                 </li>
                 <li class="submenu">
-                    <a href="index.jsp">경험나눔</a>
+                    <a href="index.jsp?menu_type=2">경험나눔</a>
                 </li>
                 <li class="submenu">
                     <a href="jobs.jsp">채용정보</a>
                 </li>
                 <li class="submenu">
-                    <a href="index.jsp">Q&A</a>
+                    <a href="index.jsp?menu_type=3">Q&A</a>
                 </li>
                 <li class="submenu">
-                    <a href="index.jsp">공지사항</a>
+                    <a href="index.jsp?menu_type=4">공지사항</a>
                 </li>
 
             	<%
